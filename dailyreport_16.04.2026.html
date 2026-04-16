@@ -1,0 +1,497 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Báo cáo thị trường chứng khoán Việt Nam - 16/04/2026</title>
+  <style>
+    :root{
+      --green:#16a34a;
+      --green-dark:#15803d;
+      --green-soft:#dcfce7;
+      --bg:#f4f8f4;
+      --card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --red:#dc2626;
+      --amber:#f59e0b;
+      --line:#e5e7eb;
+      --shadow:0 10px 30px rgba(2, 44, 16, 0.08);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(22,163,74,.10), transparent 28%),
+        radial-gradient(circle at top right, rgba(21,128,61,.08), transparent 22%),
+        var(--bg);
+    }
+    .container{max-width:1480px;margin:0 auto;padding:24px}
+    .header{
+      background:linear-gradient(135deg, var(--green-dark), var(--green));
+      color:#fff;border-radius:22px;padding:22px 26px;box-shadow:var(--shadow);
+      display:grid;grid-template-columns:2.2fr 1.2fr 1.2fr;gap:18px;align-items:center
+    }
+    .header .cell{position:relative;padding:6px 14px}
+    .header .cell:not(:last-child)::after{
+      content:"";position:absolute;right:-9px;top:10px;bottom:10px;width:1px;background:rgba(255,255,255,.28)
+    }
+    .eyebrow{font-size:12px;opacity:.84;text-transform:uppercase;letter-spacing:.09em}
+    h1{margin:6px 0 0;font-size:28px;line-height:1.15}
+    .header .value{font-size:18px;font-weight:700;margin-top:6px}
+    .sub{font-size:13px;opacity:.88;line-height:1.45}
+    .kpis{
+      display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:18px 0 16px
+    }
+    .kpi,.card{
+      background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(22,163,74,.08)
+    }
+    .kpi{padding:16px 18px}
+    .kpi-title{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+    .kpi-value{font-size:31px;font-weight:800;margin:8px 0 6px}
+    .up{color:var(--green)}
+    .down{color:var(--red)}
+    .flat{color:var(--amber)}
+    .muted{color:var(--muted)}
+    .grid-2{display:grid;grid-template-columns:1.35fr 1fr;gap:14px;margin-bottom:14px}
+    .grid-3{display:grid;grid-template-columns:1.08fr .9fr 1.02fr;gap:14px;margin-bottom:14px}
+    .grid-2-eq{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+    .card{padding:18px}
+    .card h2{font-size:18px;margin:0 0 14px}
+    .card h3{font-size:15px;margin:0 0 10px}
+    .desc{font-size:14px;line-height:1.6;color:#1f2937}
+    .mini-note{font-size:12px;color:var(--muted);line-height:1.5}
+    .spark{
+      height:182px;display:flex;align-items:flex-end;gap:10px;padding:14px 12px 10px;border-radius:18px;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,.55), rgba(255,255,255,0) 38%),
+        linear-gradient(180deg, rgba(22,163,74,.12), rgba(22,163,74,.03));
+      overflow:hidden
+    }
+    .spark .seg{
+      flex:1;border-radius:999px;background:linear-gradient(180deg, rgba(21,128,61,.22), rgba(34,197,94,.72) 55%, rgba(22,163,74,.96));
+      position:relative;min-height:18px;transition:transform .22s ease, filter .22s ease, box-shadow .22s ease
+    }
+    .spark .seg:hover{
+      transform:translateY(-4px);
+      filter:saturate(1.08);
+      box-shadow:0 10px 18px rgba(22,163,74,.16)
+    }
+    .spark .seg::after{
+      content:"";position:absolute;left:50%;transform:translateX(-50%);top:-8px;width:10px;height:10px;border-radius:50%;
+      background:#dcfce7;border:2px solid var(--green);box-shadow:0 0 0 3px rgba(22,163,74,.10)
+    }
+    .bar-mini{display:flex;flex-direction:column;gap:10px}
+    .bar-row{display:grid;grid-template-columns:74px 1fr 68px;gap:10px;align-items:center}
+    .track{height:12px;background:#ecfdf5;border-radius:999px;overflow:hidden}
+    .fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--green),var(--green-dark))}
+    .fill.gray{background:linear-gradient(90deg,#94a3b8,#64748b)}
+    .fill.amber{background:linear-gradient(90deg,#fbbf24,#f59e0b)}
+    .breadth-wrap{display:flex;flex-direction:column;gap:14px}
+    .breadth-item{display:grid;grid-template-columns:72px 1fr;gap:12px;align-items:center}
+    .stacked{height:14px;border-radius:999px;overflow:hidden;background:#f1f5f9;display:flex}
+    .stack-up{background:var(--green)}
+    .stack-flat{background:var(--amber)}
+    .stack-down{background:var(--red)}
+    .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:12px}
+    .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th,td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+    th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+    tr:last-child td{border-bottom:none}
+    .pill{display:inline-block;padding:4px 9px;border-radius:999px;font-size:12px;font-weight:700}
+    .pill-up{background:#dcfce7;color:var(--green-dark)}
+    .pill-down{background:#fee2e2;color:#991b1b}
+    .pill-flat{background:#fef3c7;color:#92400e}
+    .highlight{
+      margin-top:12px;padding:12px 14px;border-radius:14px;background:linear-gradient(90deg, rgba(22,163,74,.10), rgba(22,163,74,.04));
+      border:1px solid rgba(22,163,74,.12);font-size:13px;line-height:1.55
+    }
+    .impact-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .impact-col h3{margin-bottom:12px}
+    .impact-row{display:grid;grid-template-columns:54px 1fr 58px;gap:10px;align-items:center;margin-bottom:10px}
+    .impact-track{height:16px;border-radius:999px;background:#f1f5f9;overflow:hidden}
+    .impact-fill-up{height:100%;background:linear-gradient(90deg,#4ade80,var(--green-dark));border-radius:999px}
+    .impact-fill-down{height:100%;background:linear-gradient(90deg,#f87171,var(--red));border-radius:999px}
+    .impact-total{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:13px;font-weight:700}
+    .news-list,.eval-list{display:grid;gap:10px}
+    .news-item,.eval-item{
+      padding:12px 14px;border-radius:14px;background:#fafafa;border:1px solid var(--line)
+    }
+    .news-item strong,.eval-item strong{display:block;margin-bottom:4px}
+    .service{
+      background:linear-gradient(135deg,var(--green-dark),var(--green));
+      color:#fff
+    }
+    .service p{margin:0 0 10px;line-height:1.65}
+    .service .svc{
+      padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);margin-top:10px
+    }
+    .tiny{font-size:11px;color:var(--muted)}
+    .right{text-align:right}
+    .center{text-align:center}
+    .split-title{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}
+    .tag{
+      padding:6px 10px;border-radius:999px;background:#ecfdf5;color:var(--green-dark);font-size:12px;font-weight:700
+    }
+    @media (max-width:1100px){
+      .header,.kpis,.grid-2,.grid-3,.grid-2-eq,.impact-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="header">
+      <div class="cell">
+        <div class="eyebrow">Thị trường</div>
+        <h1>Báo cáo thị trường chứng khoán Việt Nam</h1>
+           </div>
+      <div class="cell">
+        <div class="eyebrow">Ngày báo cáo</div>
+        <div class="value">16/04/2026</div>
+        <div class="sub">Phiên đóng cửa</div>
+      </div>
+      <div class="cell">
+        <div class="eyebrow">Người thực hiện</div>
+        <div class="value">Nguyễn Long Hoàng</div>
+        <div class="sub">Contact: 098.2100.812 - Chứng khoán Phú Hưng</div>
+      </div>
+    </section>
+
+    <section class="kpis">
+      <div class="kpi">
+        <div class="kpi-title">VN-INDEX</div>
+        <div class="kpi-value">1,819.83</div>
+        <div class="up">+1.07%</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-title">HNX-INDEX</div>
+        <div class="kpi-value">256.49</div>
+        <div class="up">+1.49%</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-title">UPCOM-INDEX</div>
+        <div class="kpi-value">128.22</div>
+        <div class="down">-0.49%</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-title">VN30-INDEX</div>
+        <div class="kpi-value">1,979.19</div>
+        <div class="up">+0.90%</div>
+      </div>
+    </section>
+
+    <section class="grid-2">
+      <div class="card">
+        <h2>1. Tổng quan thị trường</h2>
+        <div class="desc">
+          VN-Index duy trì chuỗi tăng 5 phiên liên tiếp và tiến sát vùng 1,820 điểm, chủ yếu nhờ lực kéo tập trung ở nhóm vốn hóa lớn, nổi bật là các cổ phiếu họ Vingroup. 
+          Dù điểm số tích cực, trạng thái “xanh vỏ đỏ lòng” vẫn khá rõ khi số mã giảm chiếm ưu thế trên nhiều sàn, phản ánh độ lan tỏa chưa thực sự bền vững.
+          Dòng tiền tiếp tục chọn lọc, ưu tiên nhóm trụ, bất động sản dẫn dắt và một số mã bán lẻ – ngân hàng có thanh khoản cao.
+        </div>
+        <div class="highlight">
+          <strong>Nhận định nhanh:</strong> Diễn biến phiên cho thấy xu hướng tăng ngắn hạn vẫn được giữ, nhưng nền tăng hiện phụ thuộc đáng kể vào một nhóm vốn hóa lớn. Việc độ rộng còn yếu và áp lực bán ròng từ khối ngoại duy trì ở mức cao là yếu tố cần theo dõi trong các phiên kế tiếp.
+        </div>
+      </div>
+      <div class="card">
+        <div class="split-title">
+          <h2>Mini chart chỉ số</h2>
+          <span class="tag">CSS only</span>
+        </div>
+        <div class="spark" aria-label="Sparkline giả lập">
+          <span class="seg" style="height:30%"></span>
+          <span class="seg" style="height:36%"></span>
+          <span class="seg" style="height:34%"></span>
+          <span class="seg" style="height:46%"></span>
+          <span class="seg" style="height:55%"></span>
+          <span class="seg" style="height:60%"></span>
+          <span class="seg" style="height:74%"></span>
+          <span class="seg" style="height:82%"></span>
+          <span class="seg" style="height:95%"></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid-3">
+      <div class="card">
+        <h2>2. Thanh khoản</h2>
+        <table>
+          <thead>
+            <tr><th>Sàn</th><th>Khối lượng</th><th class="right">Giá trị</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>HOSE</td><td>1,000.72 triệu cp</td><td class="right">27,934.77 tỷ</td></tr>
+            <tr><td>HNX</td><td>67.52 triệu cp</td><td class="right">1,265.89 tỷ</td></tr>
+            <tr><td>UPCoM</td><td>20.79 triệu cp</td><td class="right">342.96 tỷ</td></tr>
+            <tr><td><strong>Tổng toàn thị trường</strong></td><td><strong>1,089.03 triệu cp</strong></td><td class="right"><strong>29,543.62 tỷ</strong></td></tr>
+          </tbody>
+        </table>
+        <div class="highlight">
+          Dòng tiền vẫn duy trì ở ngưỡng cao, nhưng mức tập trung lớn vào HOSE và một số cổ phiếu trụ cho thấy cấu trúc thanh khoản chưa lan tỏa đồng đều. Áp lực chốt lời ngắn hạn có xuất hiện, song chưa làm suy yếu đáng kể xung lực tăng điểm của chỉ số.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="split-title">
+          <h2>Mini chart thanh khoản</h2>
+          <span class="tag">Bar ngang</span>
+        </div>
+        <div class="bar-mini">
+          <div class="bar-row"><div>HOSE</div><div class="track"><div class="fill" style="width:94%"></div></div><div class="right">27,934.8</div></div>
+          <div class="bar-row"><div>HNX</div><div class="track"><div class="fill gray" style="width:12%"></div></div><div class="right">1,265.9</div></div>
+          <div class="bar-row"><div>UPCoM</div><div class="track"><div class="fill amber" style="width:4%"></div></div><div class="right">343.0</div></div>
+        </div>
+        <div class="mini-note">Đơn vị giá trị: tỷ đồng. Thanh khoản tiếp tục dồn về HOSE, chiếm phần áp đảo của toàn thị trường.</div>
+      </div>
+
+      <div class="card">
+        <h2>3. Độ rộng thị trường</h2>
+        <div class="breadth-wrap">
+          <div class="breadth-item">
+            <div><strong>HOSE</strong></div>
+            <div>
+              <div class="stacked">
+                <span class="stack-up" style="width:27.8%"></span>
+                <span class="stack-flat" style="width:15.9%"></span>
+                <span class="stack-down" style="width:56.3%"></span>
+              </div>
+              <div class="mini-note" style="margin-top:6px">
+                <span class="up">105</span> tăng / <span class="flat">60</span> đứng giá / <span class="down">213</span> giảm
+              </div>
+            </div>
+          </div>
+          <div class="breadth-item">
+            <div><strong>HNX</strong></div>
+            <div>
+              <div class="stacked">
+                <span class="stack-up" style="width:29.6%"></span>
+                <span class="stack-flat" style="width:34.7%"></span>
+                <span class="stack-down" style="width:35.7%"></span>
+              </div>
+              <div class="mini-note" style="margin-top:6px">
+                <span class="up">58</span> tăng / <span class="flat">68</span> đứng giá / <span class="down">70</span> giảm
+              </div>
+            </div>
+          </div>
+          <div class="breadth-item">
+            <div><strong>UPCoM</strong></div>
+            <div>
+              <div class="stacked">
+                <span class="stack-up" style="width:31.0%"></span>
+                <span class="stack-flat" style="width:31.4%"></span>
+                <span class="stack-down" style="width:37.6%"></span>
+              </div>
+              <div class="mini-note" style="margin-top:6px">
+                <span class="up">90</span> tăng / <span class="flat">91</span> đứng giá / <span class="down">109</span> giảm
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="legend">
+          <span><span class="dot" style="background:var(--green)"></span>Tăng</span>
+          <span><span class="dot" style="background:var(--amber)"></span>Đứng giá</span>
+          <span><span class="dot" style="background:var(--red)"></span>Giảm</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-bottom:14px;">
+      <div class="split-title">
+        <h2>4. Nhóm ngành</h2>
+        <span class="tag">Full width</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Nhóm</th>
+            <th>Trạng thái</th>
+            <th>Cổ phiếu tiêu biểu</th>
+            <th>Nhận xét</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Bất động sản</strong></td>
+            <td><span class="pill pill-up">Tăng mạnh</span></td>
+            <td>VIC, VHM, VRE, KBC, IDC</td>
+            <td>Dẫn dắt thị trường, đóng vai trò trụ đỡ chính cho VN-Index.</td>
+          </tr>
+          <tr>
+            <td><strong>Bán lẻ</strong></td>
+            <td><span class="pill pill-up">Tăng</span></td>
+            <td>MWG, DGW</td>
+            <td>Dòng tiền quay lại nhóm tiêu dùng, hỗ trợ tâm lý ngắn hạn.</td>
+          </tr>
+          <tr>
+            <td><strong>Điện</strong></td>
+            <td><span class="pill pill-up">Tăng</span></td>
+            <td>POW, nhóm điện trung bình</td>
+            <td>Hưởng lợi từ nhịp luân chuyển dòng tiền sang nhóm phòng thủ – tăng trưởng ổn định.</td>
+          </tr>
+          <tr>
+            <td><strong>Dầu khí</strong></td>
+            <td><span class="pill pill-down">Giảm mạnh</span></td>
+            <td>PVD, PVS, GAS</td>
+            <td>Áp lực điều chỉnh khá rõ, nhóm hàng hóa suy yếu trong phiên.</td>
+          </tr>
+          <tr>
+            <td><strong>Công nghệ</strong></td>
+            <td><span class="pill pill-down">Giảm</span></td>
+            <td>FPT, CMG</td>
+            <td>Chịu ảnh hưởng từ áp lực bán ròng mạnh của nhà đầu tư nước ngoài.</td>
+          </tr>
+          <tr>
+            <td><strong>Viễn thông / truyền thông</strong></td>
+            <td><span class="pill pill-down">Giảm</span></td>
+            <td>VGI, FOX, CTR</td>
+            <td>Suy yếu tương đối so với mặt bằng chung, chưa thu hút lại dòng tiền.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="highlight">
+        <strong>Highlight dòng tiền:</strong> Dòng tiền phiên 16/04 mang tính chọn lọc rất cao. Bất động sản tiếp tục là đầu tàu kéo điểm số, trong khi phần lớn nhóm ngành còn lại giao dịch phân hóa hoặc điều chỉnh. Đây là tín hiệu cho thấy xung lực thị trường hiện chưa lan tỏa rộng, phù hợp chiến lược ưu tiên chọn cổ phiếu hơn là mua theo chỉ số.
+      </div>
+    </section>
+
+    <section class="grid-2-eq">
+      <div class="card">
+        <h2>5. Cổ phiếu nổi bật</h2>
+        <table>
+          <thead>
+            <tr><th>Mã</th><th>Thanh khoản nổi bật</th><th>Ghi chú</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>SHB</strong></td><td>137.8 triệu cp / ~2,120 tỷ</td><td>Dẫn đầu thanh khoản, hút mạnh dòng tiền ngân hàng.</td></tr>
+            <tr><td><strong>VIX</strong></td><td>43.4 triệu cp</td><td>Duy trì mức giao dịch sôi động trong nhóm chứng khoán.</td></tr>
+            <tr><td><strong>HCM</strong></td><td>28.5 triệu cp</td><td>Thanh khoản cao nhưng chịu áp lực bán ròng ngoại.</td></tr>
+            <tr><td><strong>VIC</strong></td><td>~1,412 tỷ</td><td>Tăng trần, là trụ chính kéo điểm số thị trường.</td></tr>
+            <tr><td><strong>VHM</strong></td><td>~1,168 tỷ</td><td>Duy trì vai trò dẫn dắt cùng VIC ở nhóm bất động sản.</td></tr>
+          </tbody>
+        </table>
+        <div class="highlight">
+          Thanh khoản tập trung tại SHB, nhóm chứng khoán và bộ đôi VIC – VHM cho thấy dòng tiền đang ưu tiên các mã vừa có câu chuyện riêng, vừa có khả năng tác động mạnh lên chỉ số.
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>6. Các mã tác động VN-Index</h2>
+        <div class="impact-grid">
+          <div class="impact-col">
+            <h3>Top 5 kéo tăng</h3>
+            <div class="impact-row"><div><strong>VIC</strong></div><div class="impact-track"><div class="impact-fill-up" style="width:100%"></div></div><div class="right up">+18.82</div></div>
+            <div class="impact-row"><div><strong>VHM</strong></div><div class="impact-track"><div class="impact-fill-up" style="width:26%"></div></div><div class="right up">+4.16</div></div>
+            <div class="impact-row"><div><strong>MWG</strong></div><div class="impact-track"><div class="impact-fill-up" style="width:4%"></div></div><div class="right up">+0.77</div></div>
+            <div class="impact-row"><div><strong>VPB</strong></div><div class="impact-track"><div class="impact-fill-up" style="width:2.2%"></div></div><div class="right up">+0.64</div></div>
+            <div class="impact-row"><div><strong>KBC</strong></div><div class="impact-track"><div class="impact-fill-up" style="width:2.0%"></div></div><div class="right up">+0.48</div></div>
+        
+          </div>
+          <div class="impact-col">
+            <h3>Top 5 kéo giảm</h3>
+            <div class="impact-row"><div><strong>VCK</strong></div><div class="impact-track"><div class="impact-fill-down" style="width:100%"></div></div><div class="right down">-1.08</div></div>
+            <div class="impact-row"><div><strong>FPT</strong></div><div class="impact-track"><div class="impact-fill-down" style="width:84%"></div></div><div class="right down">-0.76</div></div>
+            <div class="impact-row"><div><strong>MBB</strong></div><div class="impact-track"><div class="impact-fill-down" style="width:76%"></div></div><div class="right down">-0.63</div></div>
+            <div class="impact-row"><div><strong>LPB</strong></div><div class="impact-track"><div class="impact-fill-down" style="width:63%"></div></div><div class="right down">-0.6</div></div>
+            <div class="impact-row"><div><strong>HDB</strong></div><div class="impact-track"><div class="impact-fill-down" style="width:61%"></div></div><div class="right down">-0.53</div></div>
+           </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid-2-eq">
+      <div class="card">
+        <h2>7. Khối ngoại</h2>
+        <table>
+          <thead>
+            <tr><th>Chỉ tiêu</th><th>Giá trị</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Tổng mua / bán ròng</td><td><span class="down">Bán ròng khoảng 1,130 tỷ</span></td></tr>
+            <tr><td>Top mua ròng</td><td>VIC (+464.7 tỷ), SSI (+235.0 tỷ), HPG (+75.0 tỷ), ACB (+66.0 tỷ), TCH (+62.4 tỷ)</td></tr>
+            <tr><td>Top bán ròng</td><td>FPT (-523.8 tỷ), VHM (-463.0 tỷ), HCM (-118.0 tỷ), VIX (-98.3 tỷ), NVL/VJC (trên -70 tỷ)</td></tr>
+          </tbody>
+        </table>
+        <div class="highlight">
+          Khối ngoại tiếp tục là điểm trừ của phiên khi duy trì bán ròng mạnh, đặc biệt tập trung ở FPT và VHM. Dù vậy, lực mua lớn vào VIC và SSI cho thấy dòng vốn ngoại vẫn đang giải ngân có chọn lọc ở những mã dẫn dắt và thanh khoản cao.
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>8. Khối tự doanh</h2>
+        <table>
+          <thead>
+            <tr><th>Chỉ tiêu</th><th>Giá trị</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Tổng mua / bán</td><td>Mua vào ~1,353 tỷ / Bán ra ~734 tỷ</td></tr>
+            <tr><td>Tổng mua / bán ròng</td><td><span class="up">Mua ròng gần 619 tỷ</span></td></tr>
+            <tr><td>Top mua ròng</td><td>SHB (+539.3 tỷ), MWG (+92.3 tỷ), STB (+48.5 tỷ), MSN (+34.4 tỷ), KBC (+20.4 tỷ)</td></tr>
+            <tr><td>Top bán ròng</td><td>VRE (-67.2 tỷ), VIC (-23.9 tỷ), HDB (-19.8 tỷ), VPB (-18.8 tỷ), NLG (-9.9 tỷ)</td></tr>
+          </tbody>
+        </table>
+        <div class="highlight">
+          Tự doanh duy trì trạng thái mua ròng tích cực, nổi bật là giao dịch đột biến tại SHB. Điều này phần nào giúp cân bằng áp lực từ khối ngoại và củng cố thanh khoản tại một số cổ phiếu trọng điểm.
+        </div>
+      </div>
+    </section>
+
+    <section class="grid-2-eq">
+      <div class="card">
+        <h2>9. Tin tức</h2>
+        <div class="news-list">
+          <div class="news-item">
+            <strong>FTSE Russell và UBCKNN tiếp tục làm việc về lộ trình sau nâng hạng</strong>
+            Hoạt động hợp tác hậu nâng hạng tiếp tục là điểm nhấn chính sách, hỗ trợ kỳ vọng dài hạn đối với chất lượng thị trường và khả năng thu hút dòng vốn ngoại.
+          </div>
+          <div class="news-item">
+            <strong>Nhóm cổ phiếu Vingroup tiếp tục là lực kéo chủ đạo</strong>
+            VIC tăng trần, VHM tăng mạnh và tiếp tục đóng góp phần lớn mức tăng của VN-Index trong bối cảnh độ rộng thị trường vẫn nghiêng về tiêu cực.
+          </div>
+          <div class="news-item">
+            <strong>Khối ngoại bán ròng lớn nhưng vẫn giải ngân chọn lọc</strong>
+            Áp lực bán tập trung ở FPT, VHM, HCM và VIX; ngược lại VIC và SSI vẫn hút ròng tốt, phản ánh chiến lược giao dịch phân hóa mạnh.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>10. Đánh giá</h2>
+        <div class="eval-list">
+          <div class="eval-item">
+            <strong>Tích cực về điểm số, nhưng chất lượng lan tỏa chưa cao</strong>
+            Chỉ số duy trì quán tính tăng tốt, song cấu trúc tăng chưa thực sự bền khi phụ thuộc lớn vào nhóm trụ.
+          </div>
+          <div class="eval-item">
+            <strong>Dòng tiền đang thiên về chiến lược chọn lọc</strong>
+            Thị trường phù hợp với cách tiếp cận tập trung vào cổ phiếu có câu chuyện và thanh khoản, thay vì mở rộng vị thế trên diện rộng.
+          </div>
+          <div class="eval-item">
+            <strong>Rủi ro ngắn hạn cần lưu ý</strong>
+            Áp lực bán ròng của khối ngoại và độ rộng yếu có thể khiến nhịp rung lắc xuất hiện rõ hơn khi thị trường tiến vào vùng cản mạnh.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-bottom:14px;">
+      <h2>11. Disclaimer</h2>
+      <div class="desc">
+        Báo cáo này chỉ nhằm mục đích cung cấp thông tin và tổng hợp diễn biến thị trường, không phải là khuyến nghị mua bán hay cam kết lợi nhuận đầu tư. Nhà đầu tư cần tự đánh giá khẩu vị rủi ro, mục tiêu tài chính và tham khảo thêm ý kiến tư vấn phù hợp trước khi ra quyết định.
+      </div>
+    </section>
+
+    <section class="card service">
+      <h2>12. Cung cấp dịch vụ</h2>
+      <div class="svc">
+        <p>Tư vấn chiến lược đầu tư hướng đến tối ưu hóa hiệu quả và tăng trưởng tài sản bền vững.</p>
+      </div>
+      <div class="svc">
+        <p>Hỗ trợ sản phẩm vay tín chấp theo lương với quy trình linh hoạt, đảm bảo bảo mật và thời gian giải ngân nhanh chóng.</p>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
