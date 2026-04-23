@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+
+<html lang="vi">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tổng kết cuối phiên - 23/04/2026</title>
+<style>
+    :root {
+      --green:#16a34a;
+      --green-dark:#15803d;
+      --green-soft:#dcfce7;
+      --red:#dc2626;
+      --yellow:#f59e0b;
+      --text:#0f172a;
+      --muted:#64748b;
+      --line:#e2e8f0;
+      --bg:#f4f7f5;
+      --card:#ffffff;
+      --shadow:0 8px 24px rgba(15,23,42,.06);
+      --radius:18px;
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg,#effaf2 0%,#f7faf8 100%);
+      color:var(--text);
+      line-height:1.45;
+    }
+    .container {
+      width:min(1400px, calc(100vw - 32px));
+      margin:18px auto 28px;
+    }
+    .header {
+      background: linear-gradient(135deg,var(--green-dark),var(--green));
+      color:#fff;
+      border-radius:22px;
+      padding:18px 22px;
+      box-shadow:var(--shadow);
+    }
+    .header-grid {
+      display:grid;
+      grid-template-columns: 1.2fr .9fr .9fr;
+      gap:18px;
+      align-items:center;
+    }
+    .header-item {
+      position:relative;
+      min-height:72px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      padding-right:14px;
+    }
+    .header-item:not(:last-child)::after {
+      content:"";
+      position:absolute;
+      right:-9px;
+      top:8px;
+      width:1px;
+      height:calc(100% - 16px);
+      background:rgba(255,255,255,.28);
+    }
+    .eyebrow {
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+      opacity:.85;
+      margin-bottom:6px;
+    }
+    .header-title {
+      font-size:28px;
+      font-weight:800;
+      line-height:1.15;
+      margin:0;
+    }
+    .header-sub {
+      font-size:15px;
+      opacity:.95;
+      margin-top:6px;
+    }
+    .kpi-grid {
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:14px;
+      margin-top:16px;
+    }
+    .kpi {
+      background:rgba(255,255,255,.13);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:18px;
+      padding:14px 16px;
+      backdrop-filter: blur(6px);
+    }
+    .kpi-label {
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      opacity:.9;
+      margin-bottom:8px;
+    }
+    .kpi-value {
+      font-size:30px;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+    .kpi-change {
+      font-size:14px;
+      font-weight:700;
+    }
+    .up { color:#86efac; }
+    .down { color:#f1b4d1; }
+    .flat { color:#fde68a; }
+
+    .section {
+      display:grid;
+      gap:14px;
+      margin-top:14px;
+    }
+    .grid-1 { grid-template-columns: 1fr; }
+    .grid-2 { grid-template-columns: 1fr 1fr; }
+    .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .grid-2-eq { grid-template-columns: 1fr 1fr; }
+    .card {
+      background:linear-gradient(180deg,#ffffff 0%, #fbfefc 100%);
+      border:1px solid #e6efe9;
+      border-radius:var(--radius);
+      box-shadow:0 10px 24px rgba(15,23,42,.05);
+      padding:16px 18px;
+    }
+    .card h3 {
+      margin:0 0 12px;
+      font-size:18px;
+      line-height:1.2;
+    }
+    .card h4 {
+      margin:0 0 8px;
+      font-size:14px;
+      color:var(--muted);
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+    }
+    .card h3 {
+      position:relative;
+      padding-left:14px;
+    }
+    .card h3::before {
+      content:"";
+      position:absolute;
+      left:0;
+      top:2px;
+      width:4px;
+      height:20px;
+      border-radius:999px;
+      background:linear-gradient(180deg,var(--green-dark),var(--green));
+    }
+    .metrics-table th,
+    .plain-table th {
+      color:#334155;
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+      background:#f8fbf9;
+    }
+    .metrics-table tr:hover td,
+    .plain-table tr:hover td {
+      background:#fbfefc;
+    }
+    .muted { color:var(--muted); }
+    .small { font-size:12px; }
+    .tight p { margin:8px 0; }
+    .summary-box {
+      display:flex;
+      gap:18px;
+      align-items:flex-end;
+      justify-content:space-between;
+      margin-bottom:10px;
+    }
+    .big-number {
+      font-size:34px;
+      font-weight:800;
+      line-height:1;
+      margin-bottom:6px;
+    }
+    .sparkline {
+      width:100%;
+      height:84px;
+      position:relative;
+      border-radius:14px;
+      background:
+        linear-gradient(to top, rgba(22,163,74,.08), rgba(22,163,74,0)),
+        repeating-linear-gradient(to right, transparent 0 42px, rgba(148,163,184,.10) 42px 43px),
+        repeating-linear-gradient(to bottom, transparent 0 27px, rgba(148,163,184,.10) 27px 28px);
+      overflow:hidden;
+    }
+    .sparkline svg {
+      width:100%;
+      height:100%;
+      display:block;
+    }
+    .metrics-table, .plain-table {
+      width:100%;
+      border-collapse:collapse;
+      font-size:14px;
+    }
+    .metrics-table td, .metrics-table th,
+    .plain-table td, .plain-table th {
+      padding:9px 8px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      vertical-align:top;
+    }
+    .metrics-table tr:last-child td,
+    .plain-table tr:last-child td {
+      border-bottom:none;
+    }
+    .num-up { color:var(--green); font-weight:800; }
+    .num-flat { color:var(--yellow); font-weight:800; }
+    .num-down { color:var(--red); font-weight:800; }
+    .legend {
+      margin-top:10px;
+      font-size:13px;
+      color:var(--muted);
+    }
+    .legend span {
+      margin-right:14px;
+      white-space:nowrap;
+    }
+    .dot {
+      display:inline-block;
+      width:8px;
+      height:8px;
+      border-radius:999px;
+      margin-right:6px;
+      vertical-align:middle;
+    }
+    .liquidity-bars {
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:8px;
+    }
+    .bar-row {
+      display:grid;
+      grid-template-columns: 62px 1fr 82px;
+      align-items:center;
+      gap:10px;
+      font-size:14px;
+    }
+    .bar-track {
+      width:100%;
+      height:12px;
+      border-radius:999px;
+      background:#eef2f7;
+      overflow:hidden;
+      position:relative;
+    }
+    .bar-fill {
+      height:100%;
+      border-radius:999px;
+      background:linear-gradient(90deg,var(--green),#22c55e);
+    }
+    .stacked {
+      width:100%;
+      height:22px;
+      background:#eef2f7;
+      border-radius:999px;
+      overflow:hidden;
+      display:flex;
+      margin:10px 0 8px;
+    }
+    .stack-up { background:var(--green); }
+    .stack-flat { background:var(--yellow); }
+    .stack-down { background:var(--red); }
+    .sector-grid {
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+      margin-top:8px;
+    }
+    .sector-box {
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fafdfb;
+    }
+    .chip {
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+      margin:4px 6px 0 0;
+    }
+    .chip-up { background:#dcfce7; color:var(--green-dark); }
+    .chip-down { background:#fee2e2; color:#b91c1c; }
+    .highlight {
+      margin-top:10px;
+      padding:12px 14px;
+      border-left:4px solid var(--green);
+      background:#f0fdf4;
+      border-radius:12px;
+      font-size:14px;
+    }
+    .impact-wrap {
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    .impact-col h4 { margin-bottom:10px; }
+    .impact-row {
+      display:grid;
+      grid-template-columns: 48px 1fr 58px;
+      gap:10px;
+      align-items:center;
+      margin:8px 0;
+      font-size:14px;
+    }
+    .impact-bar {
+      height:12px;
+      border-radius:999px;
+      background:#eef2f7;
+      overflow:hidden;
+    }
+    .impact-fill-up {
+      height:100%;
+      background:linear-gradient(90deg,#22c55e,var(--green-dark));
+      border-radius:999px;
+    }
+    .impact-fill-down {
+      height:100%;
+      background:linear-gradient(90deg,#f87171,var(--red));
+      border-radius:999px;
+    }
+    .totals {
+      margin-top:10px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .total-box {
+      background:#f8fafc;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+      font-size:14px;
+    }
+    .flow-summary {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-bottom:10px;
+    }
+    .flow-box {
+      border-radius:14px;
+      padding:12px 14px;
+      background:#f8fafc;
+      border:1px solid var(--line);
+    }
+    .flow-box .value {
+      font-size:24px;
+      font-weight:800;
+      margin-top:4px;
+    }
+    ul.clean {
+      margin:8px 0 0 18px;
+      padding:0;
+    }
+    ul.clean li { margin:7px 0; }
+    .disclaimer {
+      background:linear-gradient(135deg,#f8fafc,#f1f5f9);
+      border:1px dashed #cbd5e1;
+    }
+    .service {
+      display:grid;
+      grid-template-columns: 1.3fr 220px;
+      gap:18px;
+      align-items:center;
+    }
+    .service-list {
+      margin:8px 0 0 18px;
+      padding:0;
+    }
+    .qr-box {
+      text-align:center;
+      padding:10px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#fff;
+    }
+    .qr-box img {
+      width:160px;
+      height:160px;
+      display:block;
+      margin:0 auto 10px;
+      border-radius:10px;
+    }
+    .footer-note {
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .flow-header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .flow-header h3 { margin:0; font-size:18px; }
+    .flow-tag {
+      display:inline-flex;
+      align-items:center;
+      padding:6px 14px;
+      border-radius:999px;
+      background:#dcfce7;
+      color:var(--green-dark);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.02em;
+    }
+    .flow-summary-3 {
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .flow-kpi {
+      border-radius:16px;
+      padding:14px 18px;
+      background:#f1f5f9;
+      border:1px solid #e2e8f0;
+      min-height:88px;
+    }
+    .flow-kpi .label {
+      font-size:14px;
+      color:#64748b;
+      font-weight:700;
+      margin-bottom:8px;
+    }
+    .flow-kpi .big {
+      font-size:24px;
+      line-height:1.15;
+      font-weight:800;
+      color:#0f172a;
+    }
+    .flow-kpi .big.negative { color:var(--red); }
+    .flow-kpi .big.positive { color:var(--green); }
+    .flow-columns {
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:18px;
+      margin-bottom:14px;
+    }
+    .flow-side h4 {
+      margin:0 0 10px;
+      font-size:16px;
+      color:#0f172a;
+      text-transform:none;
+      letter-spacing:0;
+    }
+    .flow-row {
+      display:grid;
+      grid-template-columns: 62px 1fr 88px;
+      align-items:center;
+      gap:12px;
+      margin:9px 0;
+      font-size:16px;
+      font-weight:700;
+    }
+    .flow-row .ticker { color:#0f172a; }
+    .flow-track {
+      width:100%;
+      height:22px;
+      border-radius:999px;
+      background:#cfd7d3;
+      overflow:hidden;
+      position:relative;
+    }
+    .flow-fill-buy {
+      height:100%;
+      border-radius:999px;
+      background:linear-gradient(90deg,#169a45,#4ade80);
+    }
+    .flow-fill-sell {
+      height:100%;
+      border-radius:999px;
+      background:linear-gradient(90deg,#fca5a5,#ef4444);
+    }
+    .flow-value {
+      text-align:right;
+      color:#334e73;
+      font-weight:800;
+    }
+    .flow-note {
+      margin-top:6px;
+      padding:16px 18px;
+      border-left:4px solid var(--green);
+      background:#edf4ef;
+      border-radius:16px;
+      font-size:14px;
+      line-height:1.65;
+    }
+
+    @media (max-width: 1100px) {
+      .grid-1, .grid-2, .grid-3, .grid-2-eq, .impact-wrap, .sector-grid, .service, .header-grid, .kpi-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .header-item:not(:last-child)::after { display:none; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<div class="header-grid">
+<div class="header-item">
+<div class="eyebrow">Thị trường</div>
+<div class="header-title">Báo cáo tổng kết cuối phiên</div>
+<div class="header-sub">Dashboard tổng hợp cuối phiên </div>
+</div>
+<div class="header-item">
+<div class="eyebrow">Ngày báo cáo</div>
+<div class="header-title">23/04/2026</div>
+<div class="header-sub">Phiên giao dịch thứ Năm</div>
+</div>
+<div class="header-item">
+<div class="eyebrow">Người thực hiện</div>
+<div class="header-title" style="font-size:22px;">Nguyễn Long Hoàng</div>
+<div class="header-sub">(098.2100.812 - Chứng khoán PHS)</div>
+</div>
+</div>
+<div class="kpi-grid">
+<div class="kpi">
+<div class="kpi-label">VNINDEX</div>
+<div class="kpi-value">1870.36</div>
+<div class="kpi-change up">+13.06 điểm (+0.7%)</div>
+</div>
+<div class="kpi">
+<div class="kpi-label">HNX-INDEX</div>
+<div class="kpi-value">253.23</div>
+<div class="kpi-change down">-2.13 (-0.83%)</div>
+</div>
+<div class="kpi">
+<div class="kpi-label">UPCOM-INDEX</div>
+<div class="kpi-value">128.25</div>
+<div class="kpi-change down">-0.61 điểm (-0.47%)</div>
+</div>
+<div class="kpi">
+<div class="kpi-label">VN30-INDEX</div>
+<div class="kpi-value">2024.74</div>
+<div class="kpi-change up">-0.67 điểm (-0.03%)</div>
+</div>
+</div>
+</div>
+<div class="section grid-1">
+<div class="card tight">
+<h3>1. Tổng quan thị trường</h3>
+<div class="summary-box">
+<div>
+<div class="big-number num-up" style="font-size:34px;font-weight:800;line-height:1;">VN-Index tăng điểm nhờ nhóm trụ, nhưng độ rộng thị trường vẫn nghiêng về sắc đỏ</div>
+</div>
+</div>
+<ul style="padding-left: 15px;">
+<p><li>Thị trường chứng khoán Việt Nam bước vào phiên giao dịch ngày 23/04/2026 trong một trạng thái tâm lý phức tạp, bị chi phối bởi cả những kỳ vọng nội tại về mùa đại hội đồng cổ đông và những biến động địa chính trị khó lường từ thị trường quốc tế. Sự bế tắc trong các cuộc đàm phán giữa Mỹ và Iran đã đẩy giá dầu Brent vượt ngưỡng $100$ USD mỗi thùng, trực tiếp gây áp lực lên hệ thống logistics toàn cầu và làm dấy lên lo ngại về một đợt lạm phát chi phí đẩy mới. Trong bối cảnh đó, VN-Index đã có một phiên giao dịch mang tính bước ngoặt, không chỉ về mặt điểm số mà còn về cấu trúc dòng tiền và tâm lý hành vi của các thành phần tham gia thị trường.</li></p>
+<p><li>Chỉ số VN-Index kết phiên tại mức 1.870,36 điểm, tăng mạnh 13,06 điểm, tương đương 0,70% so với giá đóng cửa phiên trước. Mặc dù đà tăng về điểm số trông có vẻ ấn tượng, nhưng sự phân hóa sâu sắc giữa các nhóm vốn hóa và tình trạng &quot;xanh vỏ đỏ lòng&quot; đã trở thành đặc điểm nhận dạng chính của phiên này. Sự tăng trưởng của chỉ số gần như phụ thuộc hoàn toàn vào sức kéo của các &quot;siêu trụ&quot;, đặc biệt là cổ phiếu VIC và VCB, trong khi phần còn lại của thị trường, bao gồm các nhóm ngành nhạy cảm như chứng khoán, điện và bất động sản dân cư, lại phải đối mặt với áp lực bán tháo mạnh mẽ.</li></p>
+<p><li>Phiên 23/04 là một phiên tăng điểm tích cực về mặt chỉ số, nhưng chất lượng tăng chưa thực sự thuyết phục. Dòng tiền vẫn vào thị trường ở mức cao, song chủ yếu tập trung ở các cổ phiếu trụ, đặc biệt là nhóm Ngân hàng Nhà nướcvà VIC. Trong khi đó, độ rộng yếu và khối ngoại bán ròng mạnh cho thấy tâm lý thị trường vẫn thận trọng. Vì vậy, có thể xem đây là phiên “giữ nhịp bằng trụ, chưa phải phiên bùng nổ lan tỏa”.</li></p>
+</ul>
+</div>
+
+</div>
+<div class="section grid-2">
+<div class="card">
+<h3>2. Thanh khoản</h3>
+<table class="metrics-table">
+<tr><th>Sàn</th><th>Giá trị GD</th><th>Ghi chú</th></tr>
+<tr><td>HOSE</td><td><strong>29,278 tỷ</strong></td><td></td></tr>
+<tr><td>HNX</td><td><strong>1,440 tỷ</strong></td><td></td></tr>
+<tr><td>UPCoM</td><td><strong>618 tỷ</strong></td><td></td></tr>
+<tr><td><strong>Tổng toàn thị trường</strong></td><td><strong>31,336 tỷ</strong></td><td></td></tr>
+</table>
+<p class="muted small" style="margin-top:10px;">Nhận xét dòng tiền: Thanh khoản thị trường tiếp tục duy trì ở mức cao. Riêng trên HOSE, giá trị giao dịch đạt khoảng 29,000 tỷ đồng, phản ánh dòng tiền vẫn hiện diện mạnh trong vùng điểm cao. Tuy nhiên, việc thanh khoản lớn đi kèm trạng thái phân hóa cho thấy dòng tiền đang chọn lọc rất rõ, tập trung nhiều hơn vào nhóm trụ và các mã có câu chuyện riêng thay vì lan tỏa rộng trên toàn thị trường.</p>
+</div>
+
+<div class="card">
+<h3>3. Độ rộng thị trường</h3>
+<table class="metrics-table">
+<tr><th>Sàn</th><th>Tăng / Đứng giá / Giảm</th></tr>
+<tr>
+<td>HOSE</td>
+<td>
+<span class="num-up">104</span> /
+              <span class="num-flat">60</span> /
+              <span class="num-down">208</span>
+</td>
+</tr>
+<tr>
+<td>HNX</td>
+<td>
+<span class="num-up">45</span> /
+              <span class="num-flat">50</span> /
+              <span class="num-down">100</span>
+</td>
+</tr>
+<tr>
+<td>UPCoM</td>
+<td>
+<span class="num-up">87</span> /
+              <span class="num-flat">85</span> /
+              <span class="num-down">114</span>
+</td>
+</tr>
+</table>
+<div class="stacked">
+<div class="stack-up" style="width:27.7%;"></div>
+<div class="stack-flat" style="width:22.9%;"></div>
+<div class="stack-down" style="width:49.5%;"></div>
+</div>
+<div class="legend">
+<span><i class="dot" style="background:var(--green)"></i>Tăng</span>
+<span><i class="dot" style="background:var(--yellow)"></i>Đứng giá</span>
+<span><i class="dot" style="background:var(--red)"></i>Giảm</span>
+</div>
+<div class="footer-note">Độ rộng thị trường trong phiên ghi nhận trạng thái tiêu cực trên diện rộng khi số lượng mã giảm áp đảo số mã tăng trên cả 3 sàn. Cụ thể, tại HOSE, số mã giảm (208 mã) cao gấp đôi số mã tăng (104 mã), cho thấy áp lực điều chỉnh lan tỏa mạnh ở nhóm cổ phiếu vốn hóa vừa và nhỏ. Diễn biến tương tự cũng được ghi nhận tại HNX và UPCOM, với tỷ lệ mã giảm duy trì ở mức cao, phản ánh tâm lý thận trọng của dòng tiền ngắn hạn.</div>
+</div>
+</div>
+<div class="section">
+<div class="card">
+<h3>4. Nhóm ngành</h3>
+<div class="sector-grid">
+<div class="sector-box">
+<h4>Nhóm tăng mạnh</h4>
+<div class="chip chip-up">Bank</div>
+<div class="chip chip-up">Đầu tư công</div>
+<div class="chip chip-up">Hàng tiêu dùng</div>
+<div class="chip chip-up"></div>
+<div class="chip chip-up"></div>
+<div class="highlight">
+              Nhóm ngành tăng nổi bật trong phiên 23/04 là ngân hàng, đóng vai trò dẫn dắt chính của thị trường. Dòng tiền tập trung mạnh vào các mã vốn hóa lớn như VCB, BID, CTG, TCB, MBB, VPB, qua đó tạo lực đỡ quan trọng cho VN-Index. Bên cạnh đó, dầu khí ghi nhận diễn biến tích cực ở một số mã như PVT, PLX, PVS, PVD, BSR, trong khi bất động sản có điểm sáng ở VIC, NVL, DIG, CEO, HDC nhưng nhìn chung vẫn phân hóa, không tăng đồng đều trên toàn nhóm.
+            </div>
+</div>
+<div class="sector-box">
+<h4>Nhóm giảm mạnh</h4>
+<div class="chip chip-down">Dầu khí</div>
+<div class="chip chip-down">Điện</div>
+<div class="chip chip-down">Nguyên vật liệu</div>
+<div class="chip chip-down"></div>
+<div class="highlight" style="border-left-color:var(--red); background:#fef2f2;">
+              Áp lực điều chỉnh xuất hiện rõ hơn ở các nhóm tiêu dùng, bán lẻ, hàng không và một phần công nghiệp/điện – hạ tầng. Các mã như MWG, PNJ, MSN, MCH, VJC, GEE là những cổ phiếu gây sức ép lên chỉ số, phản ánh trạng thái chốt lời và thiếu sự lan tỏa của dòng tiền ở phần còn lại của thị trường. Ngoài ra, ngay trong nhóm bất động sản cũng có sự phân hóa mạnh khi VIC nâng đỡ chỉ số nhưng VHM lại tạo áp lực ở chiều ngược lại.
+            </div>
+</div>
+</div>
+</div>
+</div>
+<div class="section grid-2-eq">
+<div class="card">
+<h3>5. Cổ phiếu nổi bật</h3>
+<h4>Cổ phiếu nổi bật trong phiên</h4>
+<table class="plain-table">
+<tr><th>Mã</th><th>Điểm nhấn</th><th>Ghi chú ngắn</th></tr>
+<tr><td><strong>VCB</strong></td><td>+5.72%</td><td></td></tr>
+<tr><td><strong>VIC</strong></td><td>+3.52%</td><td></td></tr>
+<tr><td><strong>BID</strong></td><td>+3.35%</td><td></td></tr>
+<tr><td><strong>SAB</strong></td><td>+6.99%</td><td></td></tr>
+<tr><td><strong>PC1</strong></td><td>-6.95%</td><td></td></tr>
+</table>
+</div>
+<div class="card">
+<h3>6. Các mã tác động VN-Index</h3>
+<div class="impact-wrap">
+<div class="impact-col">
+<h4>Top 5 kéo tăng</h4>
+<div class="impact-row"><div><strong>VIC</strong></div><div class="impact-bar"><div class="impact-fill-up" style="width:100%;"></div></div><div>+11.90</div></div>
+<div class="impact-row"><div><strong>VCB</strong></div><div class="impact-bar"><div class="impact-fill-up" style="width:51%;"></div></div><div>+6.01</div></div>
+<div class="impact-row"><div><strong>BID</strong></div><div class="impact-bar"><div class="impact-fill-up" style="width:17%;"></div></div><div>+2.08</div></div>
+<div class="impact-row"><div><strong>CTG</strong></div><div class="impact-bar"><div class="impact-fill-up" style="width:9%;"></div></div><div>+0.98</div></div>
+<div class="impact-row"><div><strong>SAB</strong></div><div class="impact-bar"><div class="impact-fill-up" style="width:9%;"></div></div><div>+0.85</div></div>
+</div>
+<div class="impact-col">
+<h4>Top 5 kéo giảm</h4>
+<div class="impact-row"><div><strong>VHM</strong></div><div class="impact-bar"><div class="impact-fill-down" style="width:100%;"></div></div><div>-1.14</div></div>
+<div class="impact-row"><div><strong>BSR</strong></div><div class="impact-bar"><div class="impact-fill-down" style="width:89%;"></div></div><div>-1.01</div></div>
+<div class="impact-row"><div><strong>HPG</strong></div><div class="impact-bar"><div class="impact-fill-down" style="width:57%;"></div></div><div>-0.65</div></div>
+<div class="impact-row"><div><strong>MWG</strong></div><div class="impact-bar"><div class="impact-fill-down" style="width:52%;"></div></div><div>-0.59</div></div>
+<div class="impact-row"><div><strong>STB</strong></div><div class="impact-bar"><div class="impact-fill-down" style="width:39%;"></div></div><div>-0.44</div></div>
+</div>
+</div>
+<div class="totals">
+<div class="total-box"><strong>Tổng kéo tăng:</strong> +21.82 điểm</div>
+<div class="total-box"><strong>Tổng kéo giảm:</strong> -3.83 điểm</div>
+</div>
+</div>
+</div>
+<div class="section grid-2-eq">
+<div class="card">
+<div class="flow-header">
+<h3>7. Khối ngoại</h3>
+<div class="flow-tag">Foreign flow</div>
+</div>
+<div class="flow-summary-3">
+<div class="flow-kpi">
+<div class="label">Tổng trạng thái</div>
+<div class="big">Bán ròng mạnh</div>
+</div>
+<div class="flow-kpi">
+<div class="label">Dẫn dắt mua</div>
+<div class="big">FPT, VHM, ACB, VCB, CTG</div>
+</div>
+<div class="flow-kpi">
+<div class="label">Mua/Bán ròng</div>
+<div class="big negative">-1,615.54 tỷ đồng</div>
+</div>
+</div>
+<div class="flow-columns">
+<div class="flow-side">
+<h4>Top mua ròng</h4>
+<div class="flow-row"><div class="ticker">PVT</div><div class="flow-track"><div class="flow-fill-buy" style="width:100%;"></div></div><div class="flow-value">+72</div></div>
+<div class="flow-row"><div class="ticker">VNM</div><div class="flow-track"><div class="flow-fill-buy" style="width:75%;"></div></div><div class="flow-value">+54</div></div>
+<div class="flow-row"><div class="ticker">DCM</div><div class="flow-track"><div class="flow-fill-buy" style="width:46%;"></div></div><div class="flow-value">+33</div></div>
+<div class="flow-row"><div class="ticker">HCM</div><div class="flow-track"><div class="flow-fill-buy" style="width:42%;"></div></div><div class="flow-value">+30</div></div>
+<div class="flow-row"><div class="ticker">SAB</div><div class="flow-track"><div class="flow-fill-buy" style="width:35%;"></div></div><div class="flow-value">+26</div></div>
+</div>
+<div class="flow-side">
+<h4>Top bán ròng</h4>
+<div class="flow-row"><div class="ticker">FPT</div><div class="flow-track"><div class="flow-fill-sell" style="width:100%;"></div></div><div class="flow-value">-266</div></div>
+<div class="flow-row"><div class="ticker">ACB</div><div class="flow-track"><div class="flow-fill-sell" style="width:66%;"></div></div><div class="flow-value">-177</div></div>
+<div class="flow-row"><div class="ticker">VHM</div><div class="flow-track"><div class="flow-fill-sell" style="width:64%;"></div></div><div class="flow-value">-171</div></div>
+<div class="flow-row"><div class="ticker">VCB</div><div class="flow-track"><div class="flow-fill-sell" style="width:56%;"></div></div><div class="flow-value">-150</div></div>
+<div class="flow-row"><div class="ticker">CTG</div><div class="flow-track"><div class="flow-fill-sell" style="width:40%;"></div></div><div class="flow-value">-106</div></div>
+</div>
+</div>
+<div class="flow-note">Trong phiên 23/04/2026, khối ngoại duy trì trạng thái bán ròng mạnh trên toàn thị trường, với tổng giá trị khoảng 1,700+ tỷ đồng, tập trung chủ yếu trên HOSE. Áp lực bán ròng ghi nhận ở nhiều cổ phiếu vốn hóa lớn như FPT, ACB, VHM, cho thấy xu hướng rút vốn vẫn đang diễn ra ở nhóm bluechip. Ở chiều ngược lại, hoạt động mua ròng chỉ mang tính cục bộ tại một số mã như PVT, VNM, DCM, với quy mô không đủ lớn để cân bằng lực bán. Điều này phản ánh dòng vốn ngoại hiện chưa quay lại thị trường một cách rõ ràng, mà vẫn duy trì trạng thái thận trọng và chọn lọc.</div>
+</div>
+<div class="card">
+<div class="flow-header">
+<h3>8. Khối tự doanh</h3>
+<div class="flow-tag">Proprietary</div>
+</div>
+<div class="flow-summary-3">
+<div class="flow-kpi">
+<div class="label">Xu hướng</div>
+<div class="big">Bán ròng</div>
+</div>
+<div class="flow-kpi">
+<div class="label">Dẫn dắt mua</div>
+<div class="big">SHB, VCB, STB, TCB</div>
+</div>
+<div class="flow-kpi">
+<div class="label">Mua/Bán ròng</div>
+<div class="big negative">-479.16 tỷ đồng</div>
+</div>
+</div>
+<div class="flow-columns">
+<div class="flow-side">
+<h4>Top mua ròng</h4>
+<div class="flow-row"><div class="ticker">MWG</div><div class="flow-track"><div class="flow-fill-buy" style="width:100%;"></div></div><div class="flow-value">+50</div></div>
+<div class="flow-row"><div class="ticker">KBC</div><div class="flow-track"><div class="flow-fill-buy" style="width:55%;"></div></div><div class="flow-value">+28</div></div>
+<div class="flow-row"><div class="ticker">E1VFVN30</div><div class="flow-track"><div class="flow-fill-buy" style="width:38%;"></div></div><div class="flow-value">+19</div></div>
+<div class="flow-row"><div class="ticker">FUEVFVND</div><div class="flow-track"><div class="flow-fill-buy" style="width:21%;"></div></div><div class="flow-value">+11</div></div>
+<div class="flow-row"><div class="ticker">EIB</div><div class="flow-track"><div class="flow-fill-buy" style="width:18%;"></div></div><div class="flow-value">+9</div></div>
+</div>
+<div class="flow-side">
+<h4>Top bán ròng</h4>
+<div class="flow-row"><div class="ticker">SHB</div><div class="flow-track"><div class="flow-fill-sell" style="width:100%;"></div></div><div class="flow-value">-298</div></div>
+<div class="flow-row"><div class="ticker">VCB</div><div class="flow-track"><div class="flow-fill-sell" style="width:25%;"></div></div><div class="flow-value">-74</div></div>
+<div class="flow-row"><div class="ticker">STB</div><div class="flow-track"><div class="flow-fill-sell" style="width:14%;"></div></div><div class="flow-value">-43</div></div>
+<div class="flow-row"><div class="ticker">TCB</div><div class="flow-track"><div class="flow-fill-sell" style="width:13%;"></div></div><div class="flow-value">-38</div></div>
+<div class="flow-row"><div class="ticker">VIC</div><div class="flow-track"><div class="flow-fill-sell" style="width:12%;"></div></div><div class="flow-value">-32</div></div>
+</div></div>
+<div class="flow-note">Tự doanh trong phiên 23/04 đóng vai trò bên bán chủ động, đặc biệt tại nhóm ngân hàng – vốn là trụ đỡ của thị trường. Điều này phần nào lý giải vì sao VN-Index tăng điểm nhưng thiếu sự lan tỏa và bền vững, khi lực kéo chủ yếu đến từ dòng tiền nội khác thay vì sự đồng thuận từ khối tổ chức.</div>
+</div>
+</div>
+<div class="section">
+<div class="card">
+<h3>9. Tin tức trong ngày</h3>
+<ul class="clean">
+<li>Căng thẳng địa chính trị và giá năng lượng: Tình hình tại Trung Đông leo thang khi Iran tuyên bố bắt giữ hai tàu container tại eo biển Hormuz sau khi Mỹ gia hạn lệnh ngừng bắn. Sự bế tắc trong các cuộc đàm phán hòa bình giữa Mỹ và Iran đã đẩy giá dầu Brent Biển Bắc vượt ngưỡng 100 USD/thùng</li>
+<li>Chính sách tiền tệ của Fed: Cục Dự trữ Liên bang Mỹ (Fed) hiện duy trì lãi suất tham chiếu ở mức 3,5% - 3,75%. Trong khi IMF dự báo lãi suất có thể giảm về khoảng 3,25% - 3,5% vào cuối năm 2026, thị trường vẫn đặt cược gần 70% khả năng Fed sẽ không giảm lãi suất trong năm nay do áp lực lạm phát từ giá năng lượng.</li>
+<li>Điều hành kinh tế vĩ mô và giá cả: Sáng ngày 23/04, Phó Thủ tướng Nguyễn Văn Thắng chủ trì cuộc họp Ban Chỉ đạo điều hành giá, nhấn mạnh việc kiểm soát lạm phát trong mục tiêu 4% - 4,5% và yêu cầu không lợi dụng biến động chi phí (xăng dầu, logistics) để tăng giá bất hợp lý.</li>
+<li>Tỷ giá và lãi suất: Ngân hàng Nhà nước công bố tỷ giá trung tâm ở mức 25.105 VND/USD, tăng 5 đồng so với phiên trước. Lãi suất liên ngân hàng kỳ hạn qua đêm duy trì ở mức 5,85%, trong khi lãi suất tiết kiệm kỳ hạn 12 tháng trung bình khoảng 5,9%.</li>
+</ul>
+</div>
+</div>
+<div class="section">
+<div class="card">
+<h3>10. Đánh giá &amp; kết luận</h3>
+<ul class="clean">
+<li><strong>Tích cực:</strong> Chỉ số Vnindex gần chạm tới vùng đỉnh cũ (1,918.46)</li>
+<li><strong>Rủi ro:</strong> Dòng tiền còn phân hóa và tập trung chủ yếu vào những mã trụ có vốn hóa lớn</li>
+<li><strong>Hành động:</strong> Đối với các mã cổ phiếu đã đạt mục tiêu lợi nhuận hoặc chạm vào các vùng kháng cự mạnh, việc chủ động hạ tỷ trọng là cần thiết để bảo vệ thành quả.</li>
+<li><strong>Chiến lược:</strong> Ưu tiên quan sát các doanh nghiệp có nền tảng cơ bản vững chắc, biên lợi nhuận ít bị ảnh hưởng bởi giá dầu và logistics, hoặc những mã có câu chuyện cổ tức tiền mặt đều đặn như nhóm ngân hàng quốc doanh (VCB, BID) và nhóm hàng tiêu dùng (VNM, SAB).</li>
+</ul>
+</div>
+</div>
+<div class="section">
+<div class="card disclaimer">
+<h3>11. Disclaimer</h3>
+<p>Báo cáo này chỉ nhằm mục đích cung cấp thông tin tổng hợp và không phải là khuyến nghị mua bán chứng khoán.</p>
+</div>
+</div>
+<div class="section">
+<div class="card">
+<h3>12. Cung cấp dịch vụ</h3>
+<div class="service" style="grid-template-columns: 1fr;">
+<div>
+<ul class="service-list">
+<li>Tư vấn chiến lược đầu tư hướng đến tối ưu hóa hiệu quả và tăng trưởng tài sản bền vững.</li>
+<li>Hỗ trợ sản phẩm vay tín chấp theo lương với quy trình linh hoạt, đảm bảo bảo mật và thời gian giải ngân nhanh chóng.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
